@@ -878,6 +878,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/current payroll data')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "ds_payroll_data",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tstaged: false) ~> ds_payroll_data",
+							"dataset": {
+								"referenceName": "ds_payroll_data",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared ds_payroll_data = let AdfDoc = Sql.Database(\"udacitydpaz-ws.sql.azuresynapse.net\", \"udacitydpazsql\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"dbo\",Item=\"NYC_Payroll_Data\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"ds_payroll_data\" in Source;\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_payroll_data')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/df_agency')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -921,6 +946,7 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     staged: true,",
 						"     allowCopyCommand: true,",
@@ -981,6 +1007,7 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     staged: true,",
 						"     allowCopyCommand: true,",
@@ -1079,6 +1106,7 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
@@ -1192,6 +1220,7 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     staged: true,",
 						"     allowCopyCommand: true,",
@@ -1225,64 +1254,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_nycpayroll2021')]",
 				"[concat(variables('factoryId'), '/datasets/ds_payroll_data')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/df_title')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "csv_titlemaster",
-								"type": "DatasetReference"
-							},
-							"name": "sourceTitle"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "ds_payroll_title_md",
-								"type": "DatasetReference"
-							},
-							"name": "sinkTitle"
-						}
-					],
-					"transformations": [],
-					"scriptLines": [
-						"source(output(",
-						"          TitleCode as string,",
-						"          TitleDescription as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> sourceTitle",
-						"sourceTitle sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          TitleCode as string,",
-						"          TitleDescription as string",
-						"     ),",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     format: 'table',",
-						"     staged: true,",
-						"     allowCopyCommand: true,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sinkTitle"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/csv_titlemaster')]",
-				"[concat(variables('factoryId'), '/datasets/ds_payroll_title_md')]"
 			]
 		}
 	]

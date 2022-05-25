@@ -13,7 +13,63 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/powerquery1')]",
+			"name": "[concat(parameters('factoryName'), '/df_title')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "csv_titlemaster",
+								"type": "DatasetReference"
+							},
+							"name": "sourceTitle"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ds_payroll_title_md",
+								"type": "DatasetReference"
+							},
+							"name": "sinkTitle"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          TitleCode as string,",
+						"          TitleDescription as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> sourceTitle",
+						"sourceTitle sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          TitleCode as string,",
+						"          TitleDescription as string",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sinkTitle"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/payroll summary')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -258,7 +314,9 @@
 				"annotations": [],
 				"lastPublishTime": "2022-05-25T13:28:40Z"
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/df_title')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/3 - aggregate payroll data')]",
