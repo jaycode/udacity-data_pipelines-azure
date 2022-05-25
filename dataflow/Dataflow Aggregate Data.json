@@ -13,7 +13,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "csv_nycpayroll2021",
+						"referenceName": "csv_nycpayroll2020",
 						"type": "DatasetReference"
 					},
 					"name": "sourceNycPayroll2020"
@@ -74,7 +74,7 @@
 				"source(output(",
 				"          FiscalYear as integer,",
 				"          PayrollNumber as integer,",
-				"          AgencyCode as string,",
+				"          AgencyID as string,",
 				"          AgencyName as string,",
 				"          EmployeeID as string,",
 				"          LastName as string,",

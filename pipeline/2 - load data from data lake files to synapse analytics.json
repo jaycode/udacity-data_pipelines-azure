@@ -96,7 +96,7 @@
 				}
 			},
 			{
-				"name": "Data flow Load Payroll Data",
+				"name": "Data flow 2021 Payroll SQLDB to Synapse",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
