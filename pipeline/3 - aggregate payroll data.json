@@ -20,7 +20,7 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"dataflow_param_fiscalyear": {
-								"value": "@pipeline().parameters.global_df_param_fiscalyear",
+								"value": "@pipeline().globalParameters.global_df_param_fiscalyear",
 								"type": "Expression"
 							}
 						}
@@ -40,12 +40,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"global_df_param_fiscalyear": {
-				"type": "int",
-				"defaultValue": 2020
-			}
-		},
 		"annotations": [],
 		"lastPublishTime": "2022-05-25T18:29:21Z"
 	},

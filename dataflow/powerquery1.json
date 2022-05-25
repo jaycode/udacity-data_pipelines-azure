@@ -6,14 +6,14 @@
 			"sources": [
 				{
 					"name": "ds_payroll_summary",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tstaged: false) ~>  ds_payroll_summary",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tstaged: false) ~> ds_payroll_summary",
 					"dataset": {
 						"referenceName": "ds_payroll_summary",
 						"type": "DatasetReference"
 					}
 				}
 			],
-			"script": "section Section1;\r\nshared ds_payroll_summary = let AdfDoc = Sql.Database(\"udacitydpaz-ws.sql.azuresynapse.net\", \"udacitydpazsql\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"dbo\",Item=\"NYC_Payroll_Summary\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"ds_payroll_summary\" in Source;\r\n",
+			"script": "section Section1;\r\nshared ds_payroll_summary = let AdfDoc = Sql.Database(\"udacitydpaz-ws.sql.azuresynapse.net\", \"udacitydpazsql\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"dbo\",Item=\"NYC_Payroll_Summary\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"ds_payroll_summary\",\r\n  #\"Sorted rows\" = Table.Sort(Source, {{\"FiscalYear\", Order.Ascending}}) in #\"Sorted rows\";\r\n",
 			"documentLocale": "en-us"
 		}
 	}
