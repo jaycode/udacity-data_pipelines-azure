@@ -1,0 +1,9 @@
+{
+	"name": "udacitydpaz",
+	"location": "australiaeast",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "48485d77-9f13-4a78-8397-3c7538fc6f87",
+		"tenantId": "25a8dfbd-f3b5-496d-87d4-60533f3cccaf"
+	}
+}
