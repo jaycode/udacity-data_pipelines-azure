@@ -1,5 +1,5 @@
 {
-	"name": "powerquery2",
+	"name": "current payroll data",
 	"properties": {
 		"type": "WranglingDataFlow",
 		"typeProperties": {
@@ -12,7 +12,9 @@
 						"type": "DatasetReference"
 					}
 				}
-			]
+			],
+			"script": "section Section1;\r\nshared ds_payroll_data = let AdfDoc = Sql.Database(\"udacitydpaz-ws.sql.azuresynapse.net\", \"udacitydpazsql\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"dbo\",Item=\"NYC_Payroll_Data\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"ds_payroll_data\" in Source;\r\n",
+			"documentLocale": "en-us"
 		}
 	}
 }
