@@ -191,23 +191,11 @@
 						}
 					},
 					{
-						"name": "Data flow Load Payroll Data",
+						"name": "Data flow 2021 Payroll SQLDB to Synapse",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "Data flow Load Emp MD",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Data flow Load Title MD",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Data flow Load Agency MD",
+								"activity": "Data flow 2021 Payroll into SQLDB",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -244,6 +232,55 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Data flow 2021 Payroll into SQLDB",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Data flow Load Emp MD",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Data flow Load Title MD",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Data flow Load Agency MD",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_payroll",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceNycPayroll2021": {},
+									"sinkNycPayroll2021": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -258,7 +295,8 @@
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
 				"[concat(variables('factoryId'), '/dataflows/df_title')]",
 				"[concat(variables('factoryId'), '/dataflows/df_agency')]",
-				"[concat(variables('factoryId'), '/dataflows/df_payroll_synapse')]"
+				"[concat(variables('factoryId'), '/dataflows/df_payroll_synapse')]",
+				"[concat(variables('factoryId'), '/dataflows/df_payroll')]"
 			]
 		},
 		{
@@ -1417,7 +1455,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "csv_nycpayroll2021",
+								"referenceName": "ds_nycpayroll2021",
 								"type": "DatasetReference"
 							},
 							"name": "sourceNycPayroll2021"
@@ -1437,7 +1475,7 @@
 						"source(output(",
 						"          FiscalYear as integer,",
 						"          PayrollNumber as integer,",
-						"          AgencyCode as string,",
+						"          AgencyID as string,",
 						"          AgencyName as string,",
 						"          EmployeeID as string,",
 						"          LastName as string,",
@@ -1457,7 +1495,8 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> sourceNycPayroll2021",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceNycPayroll2021",
 						"sourceNycPayroll2021 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -1494,7 +1533,7 @@
 						"     mapColumn(",
 						"          FiscalYear,",
 						"          PayrollNumber,",
-						"          AgencyID = AgencyCode,",
+						"          AgencyID,",
 						"          AgencyName,",
 						"          EmployeeID,",
 						"          LastName,",
@@ -1516,7 +1555,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/csv_nycpayroll2021')]",
+				"[concat(variables('factoryId'), '/datasets/ds_nycpayroll2021')]",
 				"[concat(variables('factoryId'), '/datasets/ds_payroll_data')]"
 			]
 		},

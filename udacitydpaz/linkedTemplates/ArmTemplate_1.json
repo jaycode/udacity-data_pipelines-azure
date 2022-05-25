@@ -196,7 +196,50 @@
 						}
 					},
 					{
-						"name": "Data flow Load Payroll Data",
+						"name": "Data flow 2021 Payroll SQLDB to Synapse",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Data flow 2021 Payroll into SQLDB",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "df_payroll_synapse",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceNycPayroll2021": {},
+									"sinkNycPayrollData": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "AzureDataLakeStorage1",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "adlsnycpayroll-jay-teguh/dirstaging"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Data flow 2021 Payroll into SQLDB",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -228,21 +271,15 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "df_payroll_synapse",
+								"referenceName": "df_payroll",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
 									"sourceNycPayroll2021": {},
-									"sinkNycPayrollData": {}
+									"sinkNycPayroll2021": {}
 								}
 							},
-							"staging": {
-								"linkedService": {
-									"referenceName": "AzureDataLakeStorage1",
-									"type": "LinkedServiceReference"
-								},
-								"folderPath": "adlsnycpayroll-jay-teguh/dirstaging"
-							},
+							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"

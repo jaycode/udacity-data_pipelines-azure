@@ -1123,7 +1123,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "csv_nycpayroll2021",
+								"referenceName": "ds_nycpayroll2021",
 								"type": "DatasetReference"
 							},
 							"name": "sourceNycPayroll2021"
@@ -1143,7 +1143,7 @@
 						"source(output(",
 						"          FiscalYear as integer,",
 						"          PayrollNumber as integer,",
-						"          AgencyCode as string,",
+						"          AgencyID as string,",
 						"          AgencyName as string,",
 						"          EmployeeID as string,",
 						"          LastName as string,",
@@ -1163,7 +1163,8 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> sourceNycPayroll2021",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> sourceNycPayroll2021",
 						"sourceNycPayroll2021 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -1200,7 +1201,7 @@
 						"     mapColumn(",
 						"          FiscalYear,",
 						"          PayrollNumber,",
-						"          AgencyID = AgencyCode,",
+						"          AgencyID,",
 						"          AgencyName,",
 						"          EmployeeID,",
 						"          LastName,",
@@ -1222,7 +1223,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/csv_nycpayroll2021')]",
+				"[concat(variables('factoryId'), '/datasets/ds_nycpayroll2021')]",
 				"[concat(variables('factoryId'), '/datasets/ds_payroll_data')]"
 			]
 		},
