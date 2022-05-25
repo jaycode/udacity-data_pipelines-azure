@@ -1,5 +1,13 @@
 {
 	"name": "udacitydpaz",
+	"properties": {
+		"globalParameters": {
+			"global_df_param_fiscalyear": {
+				"type": "int",
+				"value": 2020
+			}
+		}
+	},
 	"location": "australiaeast",
 	"identity": {
 		"type": "SystemAssigned",
