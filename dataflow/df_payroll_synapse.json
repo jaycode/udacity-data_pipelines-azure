@@ -76,7 +76,6 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
-				"     truncate:true,",
 				"     format: 'table',",
 				"     staged: true,",
 				"     allowCopyCommand: true,",
